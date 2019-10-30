@@ -3,7 +3,7 @@
     <q-input v-model="number" label="how many time to upload the document"/>
     <q-uploader
       ref="fileUploader"
-      url="http://localhost:4444/upload"
+      :url="provideURL"
 	  multiple
       @added="addedFile"
       @finish="finishedUploading"
@@ -26,20 +26,22 @@ export default {
       attachment: null,
       backup: null,
       iteration: 0,
-	  maxIterations: 2,
+	  maxIterations: 3,
       name :'',
       type: '',
       size: '',
-      number: 0
+      number: 0,
+      urls: ['http://localhost:4444/upload', 'http://localhost:4448/upload', 'http://localhost:4446/upload']
     }
   },
   methods: {
     addedFile (files) {
 	  if (++this.iteration >= this.maxIterations) {
+	  	sessionStorage.setItem('uploading_url_index', 0)
 		this.$refs.fileUploader.upload()
 		return
 	  }
-	  this.$refs.fileUploader.addFiles([new File(files, `${this.iteration}_${files[0].name}`)])
+	  this.$refs.fileUploader.addFiles([new File(files, `_${files[0].name}`)])
     },
     finishedUploading () {
       console.log('finiched uploading')
@@ -48,6 +50,11 @@ export default {
       console.log('file removed')
       this.$refs.fileUploader.reset()
       this.iteration = 0
+    },
+    provideURL () {
+    	let uploading_url_index = Number(sessionStorage.getItem('uploading_url_index'))
+    	sessionStorage.setItem('uploading_url_index', uploading_url_index + 1)
+    	return this.urls[uploading_url_index]
     }
   }
 
