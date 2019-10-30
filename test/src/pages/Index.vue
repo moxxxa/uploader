@@ -4,10 +4,12 @@
     <q-uploader
       ref="fileUploader"
       url="http://localhost:4444/upload"
+	  multiple
       @added="addedFile"
       @finish="finishedUploading"
       @removed="removeFile"
       hide-upload-button
+	  class="n-uploader"
     />
       <div>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -24,6 +26,7 @@ export default {
       attachment: null,
       backup: null,
       iteration: 0,
+	  maxIterations: 2,
       name :'',
       type: '',
       size: '',
@@ -32,48 +35,11 @@ export default {
   },
   methods: {
     addedFile (files) {
-      console.log('file name :', files[0].name)
-      const file = new File([files[0]], files[0].name)
-      console.log('original =', files[0]);
-      console.log('************')
-      console.log('copie =',  file);
-      //  console.log('file uploader =', this.$refs.fileUploader)
-      this.uploadFile(file)
-    },
-    async uploadFile (file) {
-      if (this.iteration < this.number) {
-        let fileArray =[]
-        console.log('iteration numero :', this.iteration);
-        this.$refs.fileUploader.upload()
-        console.log('1');
-
-
-        setTimeout(() => {
-          this.$refs.fileUploader.removeUploadedFiles()
-        }, 400);
-        console.log('11');
-
-
-        setTimeout(() => {
-          let fileFinal = new File([fileFinal], file.name)
-          fileArray.push(fileFinal)
-        }, 600);
-        console.log('111');
-
-
-        setTimeout(() => {
-          if (this.iteration < this.number) {
-            this.$refs.fileUploader.addFiles(fileArray)
-          } else {
-            this.$refs.fileUploader.reset()
-            this.iteration = 0
-          }
-        }, 700);
-        //  this.$refs.fileUploader.addFiles(file)
-        console.log('1111')
-      // console.log('file uploader =', this.$refs.fileUploader.__getFileInput())
-      this.iteration += 1
-      }
+	  if (++this.iteration >= this.maxIterations) {
+		this.$refs.fileUploader.upload()
+		return
+	  }
+	  this.$refs.fileUploader.addFiles([new File(files, `${this.iteration}_${files[0].name}`)])
     },
     finishedUploading () {
       console.log('finiched uploading')
@@ -87,3 +53,12 @@ export default {
 
 }
 </script>
+
+<style>
+.n-uploader div.q-uploader__file {
+	display: none;
+}
+.n-uploader div.q-uploader__file:first-child {
+	display: block;
+}
+</style>
