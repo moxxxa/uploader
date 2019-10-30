@@ -1,0 +1,9 @@
+tache technique
+Aujourd'hui dans l'écran de dividend management, l'upload de dividend se fait sans authentification via un appel d'api directement entre le front-MAIA et le backEnd-MDI
+Pour des raisons de sécurité l'upload de dividend devrait passer par le service backEnd-MAIA, donc la création d'un ControleurDividend qui va communiquer avec MdiClientService.
+
+
+
+
+ControleurDividend : en gras
+MdiClientService   : en gras
